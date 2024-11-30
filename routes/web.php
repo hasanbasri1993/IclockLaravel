@@ -25,3 +25,13 @@ Route::post('/iclock/cdata', [iclockController::class, 'receiveRecords']);
 
 Route::get('/iclock/test', [iclockController::class, 'test']);
 Route::get('/iclock/getrequest', [iclockController::class, 'getrequest']);
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
