@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
-use App\Models\Device;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -38,7 +37,7 @@ class iclockController extends Controller
             "TransTimes=00:00;14:05\r\n".
             "TransInterval=1\r\n".
             "TransFlag=1111000000\r\n".
-            //  "TimeZone=7\r\n" .
+            'TimeZone='.Carbon::now(config('app.timezone'))->offsetHours."\r\n".
             "Realtime=1\r\n".
             'Encrypt=0';
     }
@@ -54,7 +53,6 @@ class iclockController extends Controller
             $arr = preg_split('/\\r\\n|\\r|,|\\n/', $request->getContent());
             $tot = 0;
             if ($request->input('table') == 'OPERLOG') {
-                // $tot = count($arr) - 1;
                 foreach ($arr as $rey) {
                     if (isset($rey)) {
                         $tot++;
@@ -106,8 +104,6 @@ class iclockController extends Controller
 
     public function getrequest(Request $request)
     {
-        // $r = "GET OPTION FROM: ".$request->SN."\nStamp=".strtotime('now')."\nOpStamp=".strtotime('now')."\nErrorDelay=60\nDelay=30\nResLogDay=18250\nResLogDelCount=10000\nResLogCount=50000\nTransTimes=00:00;14:05\nTransInterval=1\nTransFlag=1111000000\nRealtime=1\nEncrypt=0";
-        // update status device
         DB::table('devices')->updateOrInsert(
             ['no_sn' => $request->input('SN')],
             ['online' => now()]
@@ -119,6 +115,5 @@ class iclockController extends Controller
     private function validateAndFormatInteger($value)
     {
         return isset($value) && $value !== '' ? (int) $value : null;
-        // return is_numeric($value) ? (int) $value : null;
     }
 }
