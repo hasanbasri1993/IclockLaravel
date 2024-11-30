@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\iclockController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/version', function () {
@@ -21,6 +22,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('finger-log', [DeviceController::class, 'FingerLog'])->name('devices.FingerLog');
     Route::get('attendance', [DeviceController::class, 'Attendance'])->name('devices.Attendance');
 });
+
+Route::get('/iclock/cdata', [iclockController::class, 'handshake']);
+Route::post('/iclock/cdata', [iclockController::class, 'receiveRecords']);
+Route::get('/iclock/test', [iclockController::class, 'test']);
+Route::get('/iclock/getrequest', [iclockController::class, 'getrequest']);
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

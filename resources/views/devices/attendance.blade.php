@@ -35,27 +35,27 @@
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Timestamp</p>
+                                    Time</p>
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Status 1</p>
+                                    Status</p>
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Status 2</p>
+                                    Verify</p>
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Status 3</p>
+                                    Workcode</p>
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Status 4</p>
+                                    Reserved</p>
                             </th>
                             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
                                 <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                    Status 5</p>
+                                    Reserved</p>
                             </th>
                         </tr>
                         </thead>
@@ -120,5 +120,5 @@
             </div>
         </div>
     </div>
-</x-app-layout>/
+</x-app-layout>
 
