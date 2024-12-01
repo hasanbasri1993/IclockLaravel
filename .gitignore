@@ -25,3 +25,5 @@ yarn-error.log
 .DS_Store
 
 resources/views/vendor/livewire-table/
+
+public/vendor/log-viewer/
