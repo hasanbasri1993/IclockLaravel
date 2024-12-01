@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('/iclock/cdata', [iclockController::class, 'handshake']);
 Route::post('/iclock/cdata', [iclockController::class, 'receiveRecords']);
+Route::post('/iclock/devicecmd', [iclockController::class, 'devicecmd']);
 Route::get('/iclock/test', [iclockController::class, 'test']);
 Route::get('/iclock/getrequest', [iclockController::class, 'getrequest']);
 

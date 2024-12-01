@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Device;
+use App\Models\DeviceCmd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +99,33 @@ class iclockController extends Controller
         }
     }
 
+    public function devicecmd(Request $request)
+    {
+        $sn = $request->input('SN');
+        $cmd = $request->getContent();
+        $cmd = explode('&', $cmd);
+        $cmd_id = trim(explode('=', $cmd[0])[1]);
+        $cmdError = trim(explode('=', $cmd[1])[1]);
+        $cmd_data = trim(explode('=', $cmd[2])[1]);
+        if ($cmdError != '0') {
+            Log::error("ada error: pada sn $sn", $cmd);
+        }
+        $device = Device::where('no_sn', $sn)->first();
+        Log::info('DEVICE CMD: '.$sn.$device->id);
+        $deviceCmd = DeviceCmd::where('device_id', $device->id)
+            ->where('cmd_id', $cmd_id)
+            ->where('cmd_data', $cmd_data)
+            ->first();
+        if ($deviceCmd) {
+            $deviceCmd->cmd_status = 'success';
+            $deviceCmd->save();
+        } else {
+            Log::error("DeviceCmd not found for $deviceCmd device_id: $device->id, cmd_id: $cmd_id, cmd_data: $cmd_data");
+        }
+
+        return 'OK';
+    }
+
     public function test(Request $request)
     {
         $log['data'] = $request->getContent();
@@ -109,6 +138,14 @@ class iclockController extends Controller
             ['no_sn' => $request->input('SN')],
             ['online' => now()]
         );
+
+        $deviceCmd = DeviceCmd::pending($request->input('SN'));
+        if ($deviceCmd) {
+            Log::log('info', 'GET REQUEST: '.$request->input('SN').$deviceCmd->cmd_data);
+            $deviceCmd->update(['cmd_status' => 'sent']);
+
+            return "C:$deviceCmd->cmd_id:$deviceCmd->cmd_data";
+        }
 
         return 'OK';
     }
