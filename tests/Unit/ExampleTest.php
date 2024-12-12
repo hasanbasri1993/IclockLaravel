@@ -19,8 +19,15 @@ class ExampleTest extends TestCase
 
     public function test_sent_cmd()
     {
+        $device = Device::first();
+
+        $device->OpLogStamp = 0;
+        $device->LogStamp = 0;
+        $device->save();
+
         $deviceCmd = new DeviceCmd;
-        $deviceCmd->setCmd('BWXP185061835', 'LOG');
+        $deviceCmd->setCmd($device->SN, 'CHECK');
+        $this->assertTrue(true);
 
     }
 

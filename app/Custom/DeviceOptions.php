@@ -44,6 +44,7 @@ class DeviceOptions
         $this->pushVersion = $request->input('pushver') ?? '';
         $this->deviceInfo = $request->input('INFO') ?? '';
         $device = Device::find($this->SN);
+
         $this->Stamp = $device ? $device->LogStamp : 9999;
         $this->OperLogStamp = $device ? $device->OpLogStamp : 9999;
         $this->AttLogStamp = $device ? $device->LogStamp : 9999;
@@ -52,9 +53,10 @@ class DeviceOptions
         $this->Delay = 30;
         $this->TransTimes = $device ? $device->TransTimes : '00:00;14:05';
         $this->TransInterval = $device ? $device->TransInterval : 1;
-        $this->TransFlag = '1111000000';
-        $this->TimeZone = $device ? $device->TZAdj : Carbon::now(config('app.timezone'))
-            ->offsetHours;
+        $this->TransFlag = $device ? $device->UpdateDB : '1111111100';
+        $this->TimeZone = $device ?
+            $device->TZAdj :
+            Carbon::now(config('app.timezone'))->offsetHours;
         $this->Realtime = 1;
         $this->Encrypt = 'NONE';
     }
@@ -72,7 +74,9 @@ class DeviceOptions
             "TransFlag={$this->TransFlag}\r\n".
             'TimeZone='.$this->TimeZone."\r\n".
             "Realtime={$this->Realtime}\r\n".
-            'Encrypt='.$this->Encrypt;
+            'Encrypt='.$this->Encrypt."\r\n".
+            "ServerVer=2.2.14\r\n".
+            'TableNameStamp';
     }
 
     public function createDevice(): void

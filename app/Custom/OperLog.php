@@ -23,11 +23,16 @@ class OperLog
             if ($opType === '') {
                 continue;
             }
+
             $itemData = match ($opType) {
                 'OPLOG' => $this->parseOplogData($content),
                 'USER', 'FP' => $this->parseUserData($content),
             };
-            $data[] = $itemData;
+
+            $data[] = [
+                'opType' => $opType,
+                'data' => $itemData,
+            ];
         }
 
         return $data;
