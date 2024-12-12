@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('device_cmds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
-            $table->integer('cmd_id');
-            $table->text('cmd_data');
-            $table->enum('cmd_status', ['sent', 'pending', 'success']);
+            $table->string('SN', 20);
+            $table->foreign('SN')->references('SN')->on('devices')->onDelete('cascade');
+            $table->integer('CmdOrder');
+            $table->longText('CmdContent');
+            $table->dateTime('CmdCommitTime');
+            $table->dateTime('CmdTransTime');
+            $table->dateTime('CmdOverTime');
+            $table->integer('CmdReturn');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

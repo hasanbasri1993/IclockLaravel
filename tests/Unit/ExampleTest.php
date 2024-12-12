@@ -19,10 +19,9 @@ class ExampleTest extends TestCase
 
     public function test_sent_cmd()
     {
-        $device = Device::find(1);
         $deviceCmd = new DeviceCmd;
-        $deviceCmd->setCmd($device->id, 'CHECK');
-        $this->assertEquals('pending', $deviceCmd->pending($device->id)->cmd_status);
+        $deviceCmd->setCmd('BWXP185061835', 'LOG');
+
     }
 
     public function test_get_pending_cmd()

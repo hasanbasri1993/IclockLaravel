@@ -15,9 +15,11 @@ class AttendedTable extends LivewireTable
 
     protected bool $deferLoading = true;
 
+    protected bool $useSession = true;
+
     protected array $pollingOptions = [
-        '5s' => 'Every 5 seconds',
         '' => 'None',
+        '5s' => 'Every 5 seconds',
     ];
 
     protected function columns(): array
@@ -38,15 +40,26 @@ class AttendedTable extends LivewireTable
                 ->sortable()
                 ->searchable(),
 
-            SelectColumn::make(__('Status'), 'status1')
+            SelectColumn::make(__('Status'), 'checktype')
+                ->displayUsing(function (mixed $value): string {
+                    return match ($value) {
+                        0 => 'Masuk',
+                        1 => 'Pulang',
+                        4 => 'Masuk Lembur',
+                        5 => 'Pulang Lembur',
+                        default => 'Unknown',
+                    };
+                })
                 ->options([
                     '0' => '0 (Masuk)',
                     '1' => '1 (Pulang)',
+                    '4' => '4 (Masuk Lembur)',
+                    '5' => '5 (Pulang Lembur)',
                 ])
                 ->sortable()
                 ->searchable(),
 
-            DateColumn::make('Waktu', 'timestamp')
+            DateColumn::make('Waktu', 'checktime')
                 ->sortable()
                 ->format('F jS, Y h:i A'),
         ];
@@ -55,17 +68,6 @@ class AttendedTable extends LivewireTable
     protected function filters(): array
     {
         return [
-
-            //            SelectFilter::make(__('Category'), 'category_id')
-            //                ->options(
-            //                    Category::query()->get()->pluck('title', 'id')->toArray()
-            //                ),
-            //
-            //            SelectFilter::make(__('Author'), 'author_id')
-            //                ->options(
-            //                    User::query()->get()->pluck('name', 'id')->toArray()
-            //                ),
-
             DateFilter::make('Waktu', 'timestamp'),
         ];
     }

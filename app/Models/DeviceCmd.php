@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enum\CmdStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -10,7 +9,16 @@ class DeviceCmd extends Model
 {
     protected $table = 'device_cmds';
 
-    protected $fillable = ['device_id', 'cmd_id', 'cmd_data', 'cmd_status'];
+    protected $fillable = [
+        'SN',
+        'user_id',
+        'CmdOrder',
+        'CmdContent',
+        'CmdCommitTime',
+        'CmdTransTime',
+        'CmdOverTime',
+        'CmdReturn',
+    ];
 
     public function device(): BelongsTo
     {
@@ -19,17 +27,20 @@ class DeviceCmd extends Model
 
     public static function pending(string $deviceId): ?DeviceCmd
     {
-        $idDevice = Device::where('no_sn', $deviceId)->get()->first()->id;
-        return self::where('cmd_status', 'pending')->where('device_id', $idDevice)->get()->first();
+        return self::where('CmdTransTime', null)
+            ->where('SN', $deviceId)
+            ->get()
+            ->first();
     }
 
-    public function setCmd(string $deviceId, string $cmd): DeviceCmd
+    public static function setCmd(string $deviceId, string $cmd): DeviceCmd
     {
-        return $this->create([
-            'device_id' => $deviceId,
-            'cmd_id' => $this->where('device_id', $deviceId)->max('cmd_id') + 1,
-            'cmd_data' => $cmd,
-            'cmd_status' => CmdStatus::PENDING,
+        return self::create([
+            'SN' => $deviceId,
+            'user_id' => 1,
+            'CmdOrder' => self::where('SN', $deviceId)->max('CmdOrder') + 1,
+            'CmdContent' => $cmd,
+            'CmdCommitTime' => now(),
         ]);
     }
 }

@@ -6,17 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
 {
+    protected $table = 'checkinout';
+
     protected $fillable = [
+        'sn',
+        'stamp',
         'employee_id',
-        'timestamp',
-        'status1',
-        'status2',
-        'status3',
-        'status4',
-        'status5',
+        'checktime',
+        'checktype',
+        'verifycode',
+        'sensorid',
+        'WorkCode',
+        'Reserved',
     ];
 
     protected $casts = [
-        'timestamp' => 'datetime',
+        'checktime' => 'datetime',
     ];
 }

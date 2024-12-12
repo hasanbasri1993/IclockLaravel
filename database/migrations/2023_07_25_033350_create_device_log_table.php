@@ -6,24 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDeviceLogTable extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::create('device_log', function (Blueprint $table) {
+        Schema::create('devlogs', function (Blueprint $table) {
             $table->id();
-            $table->text('data');
-            $table->date('tgl')->nullable();
-            $table->string('sn');
-            $table->string('option')->nullable();
-            $table->string('url')->nullable();
-            // Opsi 1: Menggunakan CURRENT_TIMESTAMP saat insert
-            $table->timestamp('created_at')->useCurrent();
-            // Opsi 2: Menggunakan CURRENT_TIMESTAMP saat insert dan update
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
+            $table->string('SN', 20);
+            $table->string('OP', 8);
+            $table->string('Object', 20);
+            $table->string('Cnt', 20);
+            $table->string('ECnt', 20);
+            $table->datetime('OpTime');
+            $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('device_log');
+        Schema::dropIfExists('devlogs');
     }
 }
