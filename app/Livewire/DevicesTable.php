@@ -11,6 +11,7 @@ use RamonRietdijk\LivewireTables\Actions\Action;
 use RamonRietdijk\LivewireTables\Columns\Column;
 use RamonRietdijk\LivewireTables\Columns\DateColumn;
 use RamonRietdijk\LivewireTables\Filters\DateFilter;
+use RamonRietdijk\LivewireTables\Filters\SelectFilter;
 use RamonRietdijk\LivewireTables\Livewire\LivewireTable;
 
 class DevicesTable extends LivewireTable
@@ -73,7 +74,7 @@ class DevicesTable extends LivewireTable
                     Log::info('deviceCmd: info ->'.$d->SN);
                 }
             }),
-            Action::make(__('Transfer Data From Device'), 'info',
+            Action::make(__('Transfer Data From Device'), 'Transfer_Data_From_Device',
                 function (Enumerable $device): void {
                     foreach ($device as $d) {
                         $deviceM = Device::find($d->SN);

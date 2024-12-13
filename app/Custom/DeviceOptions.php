@@ -81,7 +81,7 @@ class DeviceOptions
 
     public function createDevice(): void
     {
-        $data = [
+        Device::create([
             'SN' => $this->SN,
             'State' => 1,
             'LastActivity' => now(),
@@ -89,11 +89,11 @@ class DeviceOptions
             'OpLogStamp' => $this->OperLogStamp,
             'PhotoStamp' => $this->AttPhotoStamp,
             'TransTimes' => $this->TransTimes,
+            'UpdateDB' => $this->TransFlag,
             'TransInterval' => $this->TransInterval,
             'TZAdj' => $this->TimeZone,
             'PushVersion' => $this->pushVersion,
-        ];
-        Device::create($data);
+        ]);
     }
 
     public function updateDevice(): void
