@@ -10,7 +10,6 @@ class CreateDeviceLogTable extends Migration
     {
         Schema::create('devlogs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
             $table->string('SN', 20);
             $table->string('OP', 8);
             $table->string('Object', 20);

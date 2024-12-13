@@ -101,7 +101,20 @@ class IclockController extends Controller
     {
         $sn = $request->input('SN');
         $cmd = $request->getContent();
-        $cmd = explode('&', $cmd);
+
+        $parsedData = [];
+        foreach (explode("\n", $cmd) as $line) {
+            if (str_contains($line, '=')) {
+                [$key, $value] = explode('=', $line, 2);
+                if (trim($key) == 'ID') {
+                    $parsedData[trim($key)] = trim('ID='.$value);
+                } else {
+                    $parsedData[trim($key)] = trim($value);
+                }
+            }
+        }
+
+        $cmd = explode('&', $parsedData['ID']);
         $cmd_id = trim(explode('=', $cmd[0])[1]);
         $cmdError = trim(explode('=', $cmd[1])[1]);
         $cmd_data = trim(explode('=', $cmd[2])[1]);
@@ -114,6 +127,7 @@ class IclockController extends Controller
             ->where('CmdOrder', $cmd_id)
             ->where('CmdContent', $cmd_data)
             ->first();
+
         if ($deviceCmd) {
             $deviceCmd->CmdOverTime = now();
             $deviceCmd->CmdReturn = $cmdError;
@@ -125,6 +139,41 @@ class IclockController extends Controller
                 $device->OpLogStamp = 9999;
                 $device->PhotoStamp = 9999;
                 $device->save();
+            } elseif ($cmd_data == 'INFO') {
+                // Map parsed data to device table fields
+                $deviceData = [
+                    'SN' => $parsedData['~SerialNumber'] ?? null,
+                    'DeviceName' => $parsedData['~DeviceName'] ?? null,
+                    'TransactionCount' => $parsedData['TransactionCount'] ?? null,
+                    'UserCount' => $parsedData['UserCount'] ?? null,
+                    'MainTime' => $parsedData['MainTime'] ?? null,
+                    'MaxFingerCount' => $parsedData['~MaxFingerCount'] ?? null,
+                    'MaxAttLogCount' => $parsedData['~MaxAttLogCount'] ?? null,
+                    'FPCount' => $parsedData['FPCount'] ?? null,
+                    'FWVersion' => $parsedData['FWVersion'] ?? null,
+                    'PushVersion' => $parsedData['PushVersion'] ?? null,
+                    'AlgVer' => $parsedData['~AlgVer'] ?? null,
+                    'FlashSize' => $parsedData['FlashSize'] ?? null,
+                    'FreeFlashSize' => $parsedData['FreeFlashSize'] ?? null,
+                    'Language' => $parsedData['Language'] ?? null,
+                    'VOLUME' => $parsedData['VOLUME'] ?? null,
+                    'DtFmt' => $parsedData['DtFmt'] ?? null,
+                    'IPAddress' => $parsedData['IPAddress'] ?? null,
+                    'IsTFT' => $parsedData['IsTFT'] ?? null,
+                    'Platform' => $parsedData['~Platform'] ?? null,
+                    'Brightness' => $parsedData['Brightness'] ?? null,
+                    'BackupDev' => $parsedData['BackupDev'] ?? null,
+                    'OEMVendor' => $parsedData['~OEMVendor'] ?? null,
+                    'FPVersion' => $parsedData['FPVersion'] ?? null,
+                ];
+
+                Log::info('INFO: '.$sn, $deviceData);
+
+                // Update or create the device record
+                \DB::table('devices')->updateOrInsert(
+                    ['SN' => $deviceData['SN']], // Unique key for identifying the device
+                    $deviceData
+                );
             }
         }
 
