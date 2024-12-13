@@ -62,6 +62,9 @@ class IclockController extends Controller
                             $fp = new FP($attLog['data']);
                             TemplateFinger::saveFinger($fp);
                             break;
+                        case 'OPLOG':
+                            // TODO: save oplog
+                            break;
                         default:
                             //Log::error('Unknown opType: '.$attLog['opType']);
                             break;
@@ -102,6 +105,8 @@ class IclockController extends Controller
         $cmd_id = trim(explode('=', $cmd[0])[1]);
         $cmdError = trim(explode('=', $cmd[1])[1]);
         $cmd_data = trim(explode('=', $cmd[2])[1]);
+
+        Log::info("DEVICE CMD:  $sn:$cmd_id:$cmd_data", $cmd);
         if ($cmdError != '0') {
             Log::error("ada error: pada sn $sn", $cmd);
         }
